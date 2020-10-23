@@ -1,0 +1,70 @@
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: auto;
+  height: 100%;
+  width: 100%;
+}
+
+#main-content {
+  display: flex;
+  height: 90%;
+  width: 96%;
+  padding: 2% 2%;
+}
+
+#text-areas {
+  display: flex;
+  flex: 2;
+}
+
+#number-lines {
+  resize: none;
+  height: 100%;
+  margin: 0px 5px;
+  flex: 1 1 0;
+}
+
+#name-lines {
+  resize: none;
+  height: 100%;
+  margin: 0px 5px;
+  flex: 8 1 0;
+}
+
+#actions {
+  display: flex;
+  flex-flow: column;
+  flex: 1;
+}
+
+#buttons {
+  display: flex;
+  flex-flow: column;
+  flex: 1;
+}
+
+#messages {
+  display: flex;
+  flex-flow: column;
+  flex: 3;
+}
+
+.action-row {
+  margin: 3px 0px;
+}
+
+#text-actions {
+  display: flex;
+  flex-flow: center;
+}
+
+.text-action {
+  flex: 1 1 0;
+  margin: 0px 2px;
+}
+

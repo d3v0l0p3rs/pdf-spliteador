@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Separador de PDFs</title>
+    <script>window.jQuery = window.$ = require('jquery');</script>
+    <script>require('bootstrap');</script>
+  </head>
+  <body>
+    <div id="main-content">
+      <div id="text-areas">
+        <textarea id="number-lines" name="number-lines" disabled></textarea>
+        <textarea id="name-lines" name="name-lines"></textarea>
+      </div>
+      <div id="actions">
+        <div id="buttons">
+          <button type="button" id="upload-pdf" class="action-row btn btn-primary">Subir PDF</button>
+          <input type="file" id="upload-pdf-input" name="upload-pdf" accept=".pdf" class="action-row btn btn-primary" style="display: none;">
+          <div id="text-actions" class="action-row btn-group" role="group">
+            <button type="button" id="delete-text" class="text-action btn btn-danger">Eliminar</button>
+            <button type="button" id="copy-text" class="text-action btn btn-info">Copiar</button>
+            <button type="button" id="paste-text" class="text-action btn btn-warning">Pegar</button>
+          </div>
+          <button type="button" id="choose-folder" class="action-row btn btn-primary">Seleccionar carpeta</button>
+          <button type="button" id="export-pdf" class="action-row btn btn-primary">Exportar PDF</button>
+        </div>
+        <div id="messages">
+          <div id="upload-file-warning" class="alert alert-warning" role="alert">
+            Debes subir un archivo
+          </div>
+          <div id="not-line-match-warning" class="alert alert-warning hide" role="alert">
+            La cantidad de nombres no coincide con la cantidad de páginas
+          </div>
+          <div id="blank-lines-warning" class="alert alert-warning hide" role="alert">
+            Tienes líneas en blanco
+          </div>
+          <div id="everything-ready-success" class="alert alert-success hide" role="alert">
+            Todo listo para generar sus PDFs
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="generating-pdfs-modal" class="modal fade"  tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="generatingPDFsTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="spinner-border text-primary" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;&nbsp;Generando PDFs</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Sus archivos se están generando, esto puede tardar algo de tiempo si está generando muchos archivos.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="error-modal" class="modal fade"  tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="generatingPDFsTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="spinner-border text-primary" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;&nbsp;Generando PDFs</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Sus archivos se están generando, esto puede tardar algo de tiempo si está generando muchos archivos.
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

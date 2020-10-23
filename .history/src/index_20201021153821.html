@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Separador de PDFs</title>
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div id="main-content">
+      <div id="text-areas">
+        <textarea id="number-lines" name="number-lines" disabled></textarea>
+        <textarea id="name-lines" name="name-lines"></textarea>
+      </div>
+      <div id="actions">
+        <button id="upload-pdf" class="action-action">Subir PDF</button>
+        <input type="file" id="upload-pdf-input" name="upload-pdf" accept=".pdf" style="display:none;">
+        <div id="text-actions" class="action-row">
+          <button id="delete-text" class="text-action">Eliminar</button>
+          <button id="copy-text" class="text-action">Copiar</button>
+          <button id="paste-text" class="text-action">Pegar</button>
+        </div>
+        <button id="choose-folder" class="action-row">Seleccionar carpeta</button>
+        <button id="export-pdf" class="action-row">Exportar PDF</button>
+      </div>
+    </div>
+  </body>
+</html>
