@@ -1,6 +1,6 @@
 {
-  "name": "split-pdf",
-  "productName": "split-pdf",
+  "name": "pdf-splitter",
+  "productName": "Separador de PDFs",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
@@ -19,7 +19,9 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "src/icon.png"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",

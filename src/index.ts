@@ -12,8 +12,10 @@ const createWindow = (): void => {
     height: 600,
     width: 800,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+      devTools: false,
+    },
+    title: 'Separador de PDFs'
   });
 
   // and load the index.html of the app.

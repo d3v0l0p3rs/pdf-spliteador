@@ -1,8 +1,8 @@
 import './index.css'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import { PDFDocument } from 'pdf-lib'
-import { writeFileSync } from 'fs'
-// HTML elements
+import { writeFileSync, existsSync, mkdirSync } from 'fs'
+
 const numberLinesText = document.getElementById('number-lines') as HTMLTextAreaElement
 const nameLinesText = document.getElementById('name-lines') as HTMLTextAreaElement
 const uploadPDFButton = document.getElementById('upload-pdf')
@@ -19,7 +19,11 @@ const everythingReadySuccess = document.getElementById('everything-ready-success
 const errorMessageModal = document.getElementById('error-message-modal') as HTMLParagraphElement
 let pdf: PDFDocument = undefined
 
+const pdfFolder = 'pdf'
+const pdfExtension = 'pdf'
+
 const getCurrentLines = () => nameLinesText.value.split(/\r\n|\r|\n/)
+const setLines = (lines: string[]) => nameLinesText.value = lines.join('\r\n')
 
 const copyText = () => {
     nameLinesText.select()
@@ -29,12 +33,12 @@ const copyText = () => {
 const pasteText = async() => {
     nameLinesText.select()
     document.execCommand('paste')
-    updateNumberLines()
+    nameLinesTextChange()
 }
 
 const deleteText = () => {
     nameLinesText.value = ''
-    updateNumberLines()
+    nameLinesTextChange()
 }
 
 const showErrorMessage = (message: string) => {
@@ -57,16 +61,10 @@ const toggleGeneratingPDFMessage = (toggle: boolean) => {
 }
 
 const setProgressBar = (percentage: number) => {
-    const currentValue = parseInt((<any>$('.progress-bar')).attr('aria-valuenow'));
+    const currentValue = parseInt((<any>$('.progress-bar')).attr('aria-valuenow'))
     if (currentValue !== undefined && currentValue !== null && currentValue !== percentage) {
-        // console.log("width", (<any>$('#progress-bar')).css('width'))
-        // console.log("aria-valuenow", (<any>$('#progress-bar')).attr('aria-valuenow'))
-        // console.log("currentValue", currentValue)
-        // console.log("percentage", percentage);
-        (<any>$('#progress-bar')).css('width', percentage+'%').attr('aria-valuenow', percentage);
+        (<any>$('#progress-bar')).css('width', percentage+'%').attr('aria-valuenow', percentage)
     }
-    // console.log("-----------------------")
-
 }
 
 const exportPDF = async() => {
@@ -79,11 +77,31 @@ const exportPDF = async() => {
     }
 }
 
+const createPDFDirectory = () => {
+    if (!existsSync(pdfFolder)) {
+        mkdirSync(pdfFolder, {
+            recursive: true
+        })
+    }
+}
+
 const createPDFFiles = async(pdfDictionary: {[pdfName: string]: PDFDocument }) => {
     let counter = 0
+    createPDFDirectory()
     for (const [pdfName, pdfFile] of Object.entries(pdfDictionary)) {
         counter++
-        writeFileSync('pdf/' + pdfName, Buffer.from(await pdfFile.save()))
+        const filePath = `${pdfFolder}/${pdfName}.${pdfExtension}`
+        if (!existsSync(filePath)) {
+            writeFileSync(filePath, Buffer.from(await pdfFile.save()))
+        } else {
+            let number = 1
+            let newPath = `${pdfFolder}/${pdfName} (${number}).${pdfExtension}`
+            while (existsSync(newPath)) {
+                number++
+                newPath = `${pdfFolder}/${pdfName} (${number}).${pdfExtension}`
+            }
+            writeFileSync(newPath, Buffer.from(await pdfFile.save()))
+        }
         setProgressBar(Math.round((counter/Object.keys(pdfDictionary).length)*80)+20)
     }
     toggleGeneratingPDFMessage(false)
@@ -98,20 +116,23 @@ const getPDFDictionary = async (): Promise<{ [pdfName: string]: PDFDocument} > =
         if (!guideDictionary.hasOwnProperty(line)) { guideDictionary[line] = [] }
         guideDictionary[line].push(i)
         setProgressBar(Math.round((i/getCurrentLines().length)*5)+0)
-    });
+    })
     let counter = 0
     for (const [pdfName, pageNumbers] of Object.entries(guideDictionary)) {
         counter++
         if (!pdfDictionary.hasOwnProperty(pdfName)) { pdfDictionary[pdfName] = await PDFDocument.create() }
         const copiedPages = await pdfDictionary[pdfName].copyPages(pdf, pageNumbers)
-        copiedPages.forEach(copiedPage => { pdfDictionary[pdfName].addPage(copiedPage) });
+        copiedPages.forEach(copiedPage => { pdfDictionary[pdfName].addPage(copiedPage) })
         setProgressBar(Math.round((counter/Object.keys(guideDictionary).length)*15)+5)
     }
 
     return pdfDictionary
 }
 
-const updateNumberLines = () => {
+const checkValidCharacters = () => { setLines(getCurrentLines().map(line => line.replace(/[^\w*\s_´¨áéíóúäëïöü]/gi, ''))) }
+
+const nameLinesTextChange = () => {
+    checkValidCharacters()
     const lines = getCurrentLines().length
     let enumeratedLinesText = ''
     for (let i = 0; i < lines; i++) {
@@ -125,7 +146,8 @@ const updateNumberLines = () => {
 const onUploadFile = async() => {
     try {
         pdf = await PDFDocument.load(await uploadPDFInput.files[0].arrayBuffer())
-        exportPDFButton.disabled = false;
+        uploadPDFInput.value = ''
+        exportPDFButton.disabled = false
         setTentativeNames()
         updateMessages()
     } catch (e) {
@@ -150,29 +172,26 @@ const updateMessages = () => {
     }
     const ready = [uploadFileWarning, blankLinesWarning, notLineMatchWarning].every(v => v.style.display === 'none')
     everythingReadySuccess.style.display = ready ? 'block' : 'none'
-    exportPDFButton.disabled = !ready;
+    exportPDFButton.disabled = !ready
 }
 
 const setTentativeNames = () => {
-    nameLinesText.innerHTML = ''
+    deleteText()
     let tentativeNames = ''
     for (let i = 0; i < pdf?.getPages().length; i++) {
         const brakeLine = i+1 !== pdf?.getPages().length ? '\n' : ''
-        tentativeNames += `Página #${i+1}${brakeLine}`;
+        tentativeNames += `Página #${i+1}${brakeLine}`
     }
+    nameLinesText.value = tentativeNames
     nameLinesText.innerHTML = tentativeNames
-    updateNumberLines()
+    nameLinesTextChange()
 }
 
 nameLinesText.addEventListener('scroll', () => { numberLinesText.scrollTop = nameLinesText.scrollTop }, false)
 numberLinesText.addEventListener('scroll', () => { nameLinesText.scrollTop = numberLinesText.scrollTop }, false)
-
 uploadPDFButton.addEventListener('click', () => uploadPDFInput.click())
-uploadPDFInput.addEventListener('input', onUploadFile, false)
-
-nameLinesText.addEventListener('input', updateNumberLines)
-
-
+uploadPDFInput.addEventListener('input', onUploadFile)
+nameLinesText.addEventListener('input', nameLinesTextChange)
 copyTextButton.addEventListener('click', copyText)
 pasteTextButton.addEventListener('click', pasteText)
 deleteTextButton.addEventListener('click', deleteText)
