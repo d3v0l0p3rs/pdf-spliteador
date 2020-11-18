@@ -1,4 +1,5 @@
 import './index.css'
+import $ from "jquery"
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import { PDFDocument } from 'pdf-lib'
 import { writeFileSync, existsSync, mkdirSync } from 'fs'
@@ -18,6 +19,8 @@ const blankLinesWarning = document.getElementById('blank-lines-warning')
 const everythingReadySuccess = document.getElementById('everything-ready-success')
 const errorMessageModal = document.getElementById('error-message-modal') as HTMLParagraphElement
 let pdf: PDFDocument = undefined
+
+console.log("TEST", (<any>$('#generating-pdfs-modal')).modal('hide'))
 
 const pdfFolder = 'pdf'
 const pdfExtension = 'pdf'
@@ -43,18 +46,19 @@ const deleteText = () => {
 
 const showErrorMessage = (message: string) => {
     errorMessageModal.innerHTML = message;
-    (<any>$('#error-modal')).modal('show')
+    // (<any>$('#error-modal')).modal('show')
 }
 
-const showSuccessModal = () => (<any>$('#success-modal')).modal('show')
+// const showSuccessModal = () => (<any>$('#success-modal')).modal('show')
+const showSuccessModal = () => {}
 
 const toggleGeneratingPDFMessage = (toggle: boolean) => {
     if (toggle) {
         setProgressBar(0);
-        (<any>$('#generating-pdfs-modal')).modal('show')
+        // (<any>$('#generating-pdfs-modal')).modal('show')
     } else {
         setTimeout(_ => {
-            (<any>$('#generating-pdfs-modal')).modal('hide')
+            // (<any>$('#generating-pdfs-modal')).modal('hide')
             setProgressBar(0)
         }, 500)
     }
@@ -63,7 +67,7 @@ const toggleGeneratingPDFMessage = (toggle: boolean) => {
 const setProgressBar = (percentage: number) => {
     const currentValue = parseInt((<any>$('.progress-bar')).attr('aria-valuenow'))
     if (currentValue !== undefined && currentValue !== null && currentValue !== percentage) {
-        (<any>$('#progress-bar')).css('width', percentage+'%').attr('aria-valuenow', percentage)
+        // (<any>$('#progress-bar')).css('width', percentage+'%').attr('aria-valuenow', percentage)
     }
 }
 
