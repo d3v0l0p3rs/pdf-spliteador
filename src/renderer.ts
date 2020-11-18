@@ -1,4 +1,5 @@
 import './index.css'
+import $ from "jquery"
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import { PDFDocument } from 'pdf-lib'
 import { writeFileSync, existsSync, mkdirSync } from 'fs'
@@ -21,6 +22,8 @@ const generatingPDFsError = document.getElementById('generating-pdfs-error')
 const openError = document.getElementById('open-error')
 const generatingPDFsSuccess = document.getElementById('generating-pdfs-success')
 let pdf: PDFDocument = undefined
+
+console.log("TEST", (<any>$('#generating-pdfs-modal')).modal('hide'))
 
 const pdfFolder = 'pdf'
 const pdfExtension = 'pdf'
