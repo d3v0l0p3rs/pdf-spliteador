@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8">
     <title>Separador de PDFs</title>
-    <script>window.jQuery = window.$ = require('jquery');</script>
     <script>require('bootstrap');</script>
   </head>
   <body>
@@ -37,61 +36,22 @@
           <div id="everything-ready-success" class="alert alert-success hide" role="alert">
             Todo listo para generar sus PDFs
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="generating-pdfs-modal" class="modal fade"  tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="generatingPDFsTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;&nbsp;Generando PDFs</h5>
-            <div class="spinner-border text-primary" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
+          <div id="generating-pdfs-info" class="alert alert-warning hide" role="alert">
+            Sus archivos están siendo generados, por favor espere
           </div>
-          <div class="modal-body">
-            Sus archivos se están generando, esto puede tardar algo de tiempo si está generando muchos archivos.
-            <div class="progress">
-              <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="success-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="generatingPDFsTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Sus PDF han sido generados</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="error-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="generatingPDFsTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Un error inesperado ha ocurrido</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
+          <div id="generating-pdfs-error" class="alert alert-danger hide" role="alert">
             <p id="error-message-modal">Se ha encontrado un problema.</p>
             <p>Si el error persiste, comuniquese con Deft Soluciones.</p>
-            <a href="https://deftsoluciones.com" target="_blank">Deft Soluciones</a>
+            <!-- <a href="https://deftsoluciones.com" target="_blank">Deft Soluciones</a> -->
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+          <div id="open-error" class="alert alert-danger hide" role="alert">
+            <p>
+              Se ha encontrado un error abriendo el archivo PDF, asegurese de que el archivo
+              que está intentando abrir es un PDF y no está encriptado (que no tenga contraseña)
+            </p>
+          </div>
+          <div id="generating-pdfs-success" class="alert alert-success hide" role="alert">
+            Sus archivos archivos han sido generados satisfactoriamente
           </div>
         </div>
       </div>

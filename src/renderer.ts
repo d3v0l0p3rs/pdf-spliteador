@@ -16,7 +16,10 @@ const uploadFileWarning = document.getElementById('upload-file-warning')
 const notLineMatchWarning = document.getElementById('not-line-match-warning')
 const blankLinesWarning = document.getElementById('blank-lines-warning')
 const everythingReadySuccess = document.getElementById('everything-ready-success')
-const errorMessageModal = document.getElementById('error-message-modal') as HTMLParagraphElement
+const generatingPDFsInfo = document.getElementById('generating-pdfs-info')
+const generatingPDFsError = document.getElementById('generating-pdfs-error')
+const openError = document.getElementById('open-error')
+const generatingPDFsSuccess = document.getElementById('generating-pdfs-success')
 let pdf: PDFDocument = undefined
 
 const pdfFolder = 'pdf'
@@ -41,39 +44,12 @@ const deleteText = () => {
     nameLinesTextChange()
 }
 
-const showErrorMessage = (message: string) => {
-    errorMessageModal.innerHTML = message;
-    (<any>$('#error-modal')).modal('show')
-}
-
-const showSuccessModal = () => (<any>$('#success-modal')).modal('show')
-
-const toggleGeneratingPDFMessage = (toggle: boolean) => {
-    if (toggle) {
-        setProgressBar(0);
-        (<any>$('#generating-pdfs-modal')).modal('show')
-    } else {
-        setTimeout(_ => {
-            (<any>$('#generating-pdfs-modal')).modal('hide')
-            setProgressBar(0)
-        }, 500)
-    }
-}
-
-const setProgressBar = (percentage: number) => {
-    const currentValue = parseInt((<any>$('.progress-bar')).attr('aria-valuenow'))
-    if (currentValue !== undefined && currentValue !== null && currentValue !== percentage) {
-        (<any>$('#progress-bar')).css('width', percentage+'%').attr('aria-valuenow', percentage)
-    }
-}
-
 const exportPDF = async() => {
-    toggleGeneratingPDFMessage(true)
+    updateMessages('work')
     try {
         createPDFFiles(await getPDFDictionary())
     } catch (e) {
-        toggleGeneratingPDFMessage(false)
-        showErrorMessage('Se han encontrado problemas al momento de generar sus archivos, por favor, intente de nuevo.')
+        updateMessages('fail_generate')
     }
 }
 
@@ -102,10 +78,8 @@ const createPDFFiles = async(pdfDictionary: {[pdfName: string]: PDFDocument }) =
             }
             writeFileSync(newPath, Buffer.from(await pdfFile.save()))
         }
-        setProgressBar(Math.round((counter/Object.keys(pdfDictionary).length)*80)+20)
     }
-    toggleGeneratingPDFMessage(false)
-    showSuccessModal()
+    updateMessages('done')
 }
 
 const getPDFDictionary = async (): Promise<{ [pdfName: string]: PDFDocument} > => {
@@ -115,7 +89,6 @@ const getPDFDictionary = async (): Promise<{ [pdfName: string]: PDFDocument} > =
     getCurrentLines().forEach((line, i) => {
         if (!guideDictionary.hasOwnProperty(line)) { guideDictionary[line] = [] }
         guideDictionary[line].push(i)
-        setProgressBar(Math.round((i/getCurrentLines().length)*5)+0)
     })
     let counter = 0
     for (const [pdfName, pageNumbers] of Object.entries(guideDictionary)) {
@@ -123,7 +96,6 @@ const getPDFDictionary = async (): Promise<{ [pdfName: string]: PDFDocument} > =
         if (!pdfDictionary.hasOwnProperty(pdfName)) { pdfDictionary[pdfName] = await PDFDocument.create() }
         const copiedPages = await pdfDictionary[pdfName].copyPages(pdf, pageNumbers)
         copiedPages.forEach(copiedPage => { pdfDictionary[pdfName].addPage(copiedPage) })
-        setProgressBar(Math.round((counter/Object.keys(guideDictionary).length)*15)+5)
     }
 
     return pdfDictionary
@@ -144,6 +116,7 @@ const nameLinesTextChange = () => {
 }
 
 const onUploadFile = async() => {
+    pdf = undefined
     try {
         pdf = await PDFDocument.load(await uploadPDFInput.files[0].arrayBuffer())
         uploadPDFInput.value = ''
@@ -151,11 +124,11 @@ const onUploadFile = async() => {
         setTentativeNames()
         updateMessages()
     } catch (e) {
-        showErrorMessage('Se han encontrado problemas al momento de cargar su PDF, por favor, intente de nuevo.')
+        updateMessages('fail_open')
     }
 }
 
-const updateMessages = () => {
+const updateMessages = (state?: 'work' | 'done' | 'fail_open' | 'fail_generate') => {
     const linesDiff = getCurrentLines().length - pdf?.getPages().length
     const blankLinesCheck = getCurrentLines().reduce((a, c) => a &&!!c, true)
     uploadFileWarning.style.display = pdf ? 'none' : 'block'
@@ -171,8 +144,12 @@ const updateMessages = () => {
         notLineMatchWarning.style.display = 'none'
     }
     const ready = [uploadFileWarning, blankLinesWarning, notLineMatchWarning].every(v => v.style.display === 'none')
-    everythingReadySuccess.style.display = ready ? 'block' : 'none'
+    everythingReadySuccess.style.display = ready && !state ? 'block' : 'none'
     exportPDFButton.disabled = !ready
+    generatingPDFsInfo.style.display = state && state === 'work' ? 'block' : 'none'
+    generatingPDFsSuccess.style.display = state && state === 'done' ? 'block' : 'none'
+    generatingPDFsError.style.display = state && state === 'fail_generate' ? 'block' : 'none'
+    openError.style.display = state && state === 'fail_open' ? 'block' : 'none'
 }
 
 const setTentativeNames = () => {
