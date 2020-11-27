@@ -23,8 +23,6 @@ const openError = document.getElementById('open-error')
 const generatingPDFsSuccess = document.getElementById('generating-pdfs-success')
 let pdf: PDFDocument = undefined
 
-console.log("TEST", (<any>$('#generating-pdfs-modal')).modal('hide'))
-
 const pdfFolder = 'pdf'
 const pdfExtension = 'pdf'
 
