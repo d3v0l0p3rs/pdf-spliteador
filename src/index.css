@@ -10,6 +10,20 @@ body {
   width: 100%;
 }
 
+#logo-div-container {
+  width: 100%;
+  display: flex;
+  padding: 5px;
+}
+
+#logo-a-container {
+  margin: auto;
+}
+
+#logo {
+  height: 5em;
+}
+
 #main-content {
   display: flex;
   height: 90%;

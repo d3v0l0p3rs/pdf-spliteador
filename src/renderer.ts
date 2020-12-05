@@ -1,6 +1,6 @@
 import './index.css'
-import $ from "jquery"
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
+import { shell } from 'electron';
 import { PDFDocument } from 'pdf-lib'
 import { writeFileSync, existsSync, mkdirSync } from 'fs'
 
@@ -8,10 +8,11 @@ const numberLinesText = document.getElementById('number-lines') as HTMLTextAreaE
 const nameLinesText = document.getElementById('name-lines') as HTMLTextAreaElement
 const uploadPDFButton = document.getElementById('upload-pdf')
 const uploadPDFInput = document.getElementById('upload-pdf-input') as HTMLInputElement
+const goDeftButtons = document.getElementsByClassName('go-deft-button') as HTMLCollection
 const deleteTextButton = document.getElementById('delete-text')
 const copyTextButton = document.getElementById('copy-text')
 const pasteTextButton = document.getElementById('paste-text')
-const chooseFolderButton = document.getElementById('choose-folder')
+// const chooseFolderButton = document.getElementById('choose-folder')
 const exportPDFButton = document.getElementById('export-pdf') as HTMLButtonElement
 const uploadFileWarning = document.getElementById('upload-file-warning')
 const notLineMatchWarning = document.getElementById('not-line-match-warning')
@@ -25,6 +26,7 @@ let pdf: PDFDocument = undefined
 
 const pdfFolder = 'pdf'
 const pdfExtension = 'pdf'
+const deftURL = 'https://deftsoluciones.com/'
 
 const getCurrentLines = () => nameLinesText.value.split(/\r\n|\r|\n/)
 const setLines = (lines: string[]) => nameLinesText.value = lines.join('\r\n')
@@ -63,19 +65,17 @@ const createPDFDirectory = () => {
 }
 
 const createPDFFiles = async(pdfDictionary: {[pdfName: string]: PDFDocument }) => {
-    let counter = 0
     createPDFDirectory()
     for (const [pdfName, pdfFile] of Object.entries(pdfDictionary)) {
-        counter++
         const filePath = `${pdfFolder}/${pdfName}.${pdfExtension}`
         if (!existsSync(filePath)) {
             writeFileSync(filePath, Buffer.from(await pdfFile.save()))
         } else {
-            let number = 1
-            let newPath = `${pdfFolder}/${pdfName} (${number}).${pdfExtension}`
+            let counter = 1
+            let newPath = `${pdfFolder}/${pdfName} (${counter}).${pdfExtension}`
             while (existsSync(newPath)) {
-                number++
-                newPath = `${pdfFolder}/${pdfName} (${number}).${pdfExtension}`
+                counter++
+                newPath = `${pdfFolder}/${pdfName} (${counter}).${pdfExtension}`
             }
             writeFileSync(newPath, Buffer.from(await pdfFile.save()))
         }
@@ -84,17 +84,15 @@ const createPDFFiles = async(pdfDictionary: {[pdfName: string]: PDFDocument }) =
 }
 
 const getPDFDictionary = async (): Promise<{ [pdfName: string]: PDFDocument} > => {
-    let guideDictionary: {[pdfName: string]: number[] } = {}
-    let pdfDictionary: {[pdfName: string]: PDFDocument } = {}
+    const guideDictionary: {[pdfName: string]: number[] } = {}
+    const pdfDictionary: {[pdfName: string]: PDFDocument } = {}
 
     getCurrentLines().forEach((line, i) => {
-        if (!guideDictionary.hasOwnProperty(line)) { guideDictionary[line] = [] }
+        if (!guideDictionary[line]) { guideDictionary[line] = [] }
         guideDictionary[line].push(i)
     })
-    let counter = 0
     for (const [pdfName, pageNumbers] of Object.entries(guideDictionary)) {
-        counter++
-        if (!pdfDictionary.hasOwnProperty(pdfName)) { pdfDictionary[pdfName] = await PDFDocument.create() }
+        if (!pdfDictionary[pdfName]) { pdfDictionary[pdfName] = await PDFDocument.create() }
         const copiedPages = await pdfDictionary[pdfName].copyPages(pdf, pageNumbers)
         copiedPages.forEach(copiedPage => { pdfDictionary[pdfName].addPage(copiedPage) })
     }
@@ -174,3 +172,4 @@ copyTextButton.addEventListener('click', copyText)
 pasteTextButton.addEventListener('click', pasteText)
 deleteTextButton.addEventListener('click', deleteText)
 exportPDFButton.addEventListener('click', exportPDF)
+Array.from(goDeftButtons).forEach((goDeftButton: HTMLLinkElement) => goDeftButton.addEventListener('click', () => shell.openExternal(deftURL)))
