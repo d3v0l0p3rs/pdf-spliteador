@@ -7,12 +7,13 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
+    "package-win": "electron-packager .",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts .",
     "pre-make": "npm prune --production && rm -rf out && npm i",
     "clean": "modclean -n default:safe -r",
-    "ultra-make": "npm run pre-make && npm run clean && npm run package"
+    "ultra-make": "npm run pre-make && npm run clean && npm run package-win"
   },
   "keywords": [],
   "author": {
