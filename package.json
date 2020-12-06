@@ -7,13 +7,13 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "package-win": "electron-packager .",
+    "build-win": "electron-builder build --win --ia32",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts .",
     "pre-make": "npm prune --production && rm -rf out && npm i",
     "clean": "modclean -n default:safe -r",
-    "ultra-make": "npm run pre-make && npm run clean && npm run package-win"
+    "ultra-make": "npm run pre-make && npm run clean && npm run build-win"
   },
   "keywords": [],
   "author": {
@@ -101,6 +101,7 @@
     "@typescript-eslint/parser": "^4.0.1",
     "css-loader": "^4.2.1",
     "electron": "10.1.4",
+    "electron-builder": "^22.9.1",
     "electron-packager": "^15.2.0",
     "electron-squirrel-startup": "^1.0.0",
     "eslint": "^7.6.0",
