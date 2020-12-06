@@ -16,17 +16,18 @@
   },
   "keywords": [],
   "author": {
-    "name": "Mario Payan",
+    "name": "Deft",
     "email": "deftsoluciones@gmail.com"
   },
   "build": {
     "productName": "Separador de PDFs",
     "appId": "com.undefined.splitpdf",
     "win": {
-      "target": ["portable"],
+      "target": "portable",
       "icon": "assets/icon.png"
     },
     "portable": {
+      "unicode": false,
       "artifactName": "Separador de PDFs.exe"
     },
     "directories": {
@@ -94,18 +95,19 @@
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@electron-forge/plugin-webpack": "6.0.0-beta.54",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+    "@types/jquery": "^3.5.4",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
-    "@types/jquery": "^3.5.4",
     "css-loader": "^4.2.1",
     "electron": "10.1.4",
+    "electron-packager": "^15.2.0",
     "electron-squirrel-startup": "^1.0.0",
     "eslint": "^7.6.0",
     "eslint-plugin-import": "^2.20.0",
     "fork-ts-checker-webpack-plugin": "^5.0.14",
     "jquery": "3.5.1",
-    "node-loader": "^1.0.1",
     "modclean": "^3.0.0-beta.1",
+    "node-loader": "^1.0.1",
     "style-loader": "^1.2.1",
     "ts-loader": "^8.0.2",
     "typescript": "^4.0.2"
